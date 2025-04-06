@@ -1,146 +1,100 @@
-# ArbiNumber
+# 🚀 ArbiMath PHP: Unleash Infinite Precision in Your PHP Applications! 🚀
 
-**ArbiNumber** is a powerful PHP library for arbitrary precision mathematics. It provides a simple, optimal, and type-safe way to perform high-precision calculations, leveraging the BCMath extension and optionally the PECL Operator extension for enhanced performance.
+[![Latest Stable Version](https://img.shields.io/packagist/v/shtse8/arbimath.svg?style=flat-square)](https://packagist.org/packages/shtse8/arbimath)
+[![Total Downloads](https://img.shields.io/packagist/dt/shtse8/arbimath.svg?style=flat-square)](https://packagist.org/packages/shtse8/arbimath)
+[![License](https://img.shields.io/packagist/l/shtse8/arbimath.svg?style=flat-square)](https://packagist.org/packages/shtse8/arbimath)
 
-## Features
+**Tired of floating-point inaccuracies ruining your calculations? Need to handle numbers larger than your server's RAM?**
 
-- **Arbitrary Precision Arithmetic**: Perform calculations with any desired level of precision.
-- **Support for Scientific Notation**: Seamlessly handle numbers in scientific format.
-- **Integration with PHP's Native Functions**: Easily use ArbiNumber with PHP’s built-in mathematical functions.
-- **Optional Operator Overloading**: For intuitive and natural syntax using the PECL Operator extension.
-- **Comprehensive Mathematical Operations**: Includes addition, subtraction, multiplication, division, power, modulus, and more.
-- **Human-Readable Formatting Options**: Format numbers with thousands separators and custom decimal places.
+Standard PHP math functions can hit limitations quickly, leading to subtle bugs and precision errors, especially in critical applications like finance, scientific computing, or cryptography.
 
-## Requirements
+**✨ Enter ArbiMath PHP: Your ultimate weapon for high-precision mathematics in PHP! ✨**
 
-- PHP 8.0 or higher
-- BCMath extension enabled
+ArbiMath PHP provides a robust, intuitive, and type-safe `ArbiNumber` class, built upon the battle-tested BCMath extension, allowing you to perform calculations with **virtually unlimited precision**. Say goodbye to precision headaches and hello to reliable results!
 
-### Optional (for operator overloading)
-- [PECL Operator extension](https://github.com/php/pecl-php-operator)
+## Why Choose ArbiMath PHP? 🤔
 
-## Installation
+*   **🎯 Uncompromising Precision:** Perform calculations with the exactness you demand. No more rounding errors, no more approximations. Perfect for financial systems, scientific simulations, and anywhere accuracy is paramount.
+*   **🐘 Handle HUGE Numbers Effortlessly:** Whether it's astronomical figures or complex cryptographic keys, ArbiMath PHP manages numbers of any magnitude with ease.
+*   **💻 Clean & Intuitive API:** A thoughtfully designed object-oriented interface makes complex math feel simple. Chain methods for elegant and readable code.
+*   **✨ Optional Operator Overloading:** Want to write `$a + $b` instead of `$a->add($b)`? Install the (optional) PECL Operator extension and enjoy natural mathematical syntax!
+*   **⚡ Performance Optimized:** Leverages the highly optimized, low-level BCMath extension for reliable speed.
+*   ** nowoczesny PHP Ready:** Built for PHP 8.0+, embracing strict types and PSR-12 standards for modern development workflows.
 
-### Via Composer
-
-```bash
-composer require shtse8/arbimath
-```
-
-### Installing BCMath
-
-On Debian/Ubuntu systems:
-
-```bash
-# Example for PHP 8.0 on Debian/Ubuntu:
-sudo apt install php8.0-bcmath
-```
-
-For other systems, please refer to the [PHP documentation](https://www.php.net/manual/en/book.bc.php) for installation instructions.
-
-### Installing PECL Operator (Optional)
-
-If you want to use operator overloading, you'll need to install the PECL Operator extension:
-
-```bash
-# Note: Installation might vary depending on your OS and PHP setup.
-# PECL Operator might not be actively maintained or compatible with recent PHP versions.
-# Verify compatibility before installing.
-# Example build steps (may need adjustments):
-git clone https://github.com/php/pecl-php-operator
-cd pecl-php-operator
-phpize
-./configure
-make && sudo make install
-```
-
-Then, enable the extension (adjust paths for your PHP version, e.g., 8.0):
-
-```bash
-# Example for PHP 8.0 FPM/CLI on Debian/Ubuntu:
-echo "extension=operator.so" | sudo tee /etc/php/8.0/mods-available/operator.ini
-sudo ln -s /etc/php/8.0/mods-available/operator.ini /etc/php/8.0/cli/conf.d/20-operator.ini
-sudo ln -s /etc/php/8.0/mods-available/operator.ini /etc/php/8.0/fpm/conf.d/20-operator.ini
-# Reload PHP-FPM if applicable
-sudo service php8.0-fpm reload
-```
-
-Note: Adjust the PHP version in the paths if you're using a different version.
-
-## Usage
-
-### Basic Usage
+## Quick Start ⚡
 
 ```php
-use Shtse8\ArbiMath PHP\ArbiNumber;
+<?php
 
-$num1 = new ArbiNumber("1.8573958822565E+17");
-$num2 = new ArbiNumber("111");
+use Shtse8\ArbiMath\ArbiNumber;
 
-$result = $num1->add($num2)->pow($num2);
-echo $result->toString();
+require 'vendor/autoload.php';
+
+// Create numbers with insane precision or magnitude
+$pi = new ArbiNumber('3.1415926535897932384626433832795028841971');
+$largeNumber = new ArbiNumber('1.8573958822565E+50'); // Handles scientific notation!
+$smallIncrement = new ArbiNumber('0.0000000000000000000000000000000000000001');
+
+// Chain operations fluently
+$result = $largeNumber->mul($pi)->add($smallIncrement)->pow('3');
+
+echo "Result: " . $result->toString() . "\n";
+// Need formatting?
+echo "Formatted: " . $result->format(10) . "\n"; // Format with separators and 10 decimal places
+
+// With PECL Operator (Optional)
+// $result = ($largeNumber * $pi + $smallIncrement) ** 3;
+// echo $result;
+
+?>
 ```
 
-### With Operator Overloading (requires PECL Operator)
+## Installation 🛠️
 
-```php
-use Shtse8\ArbiMath PHP\ArbiNumber;
+1.  **Require via Composer:**
+    ```bash
+    composer require shtse8/arbimath
+    ```
+2.  **Ensure BCMath is Enabled:**
+    This extension is usually enabled by default, but if not:
+    ```bash
+    # Example for PHP 8.0 on Debian/Ubuntu:
+    sudo apt install php8.0-bcmath
+    # Or consult your OS/PHP documentation
+    ```
+3.  **(Optional) Install PECL Operator for Operator Overloading:**
+    *Note: This extension might require manual compilation and compatibility checks.*
+    ```bash
+    # General steps (adapt for your system):
+    # git clone https://github.com/php/pecl-php-operator
+    # cd pecl-php-operator && phpize && ./configure && make && sudo make install
+    # echo "extension=operator.so" | sudo tee /etc/php/8.0/mods-available/operator.ini
+    # sudo ln -s /etc/php/8.0/mods-available/operator.ini /etc/php/8.0/cli/conf.d/20-operator.ini
+    # sudo service php8.0-fpm reload # If using FPM
+    ```
 
-$num1 = new ArbiNumber("1.8573958822565E+17");
-$num2 = new ArbiNumber("111");
+## Core Methods Overview 📚
 
-$result = $num1 + $num2;
-$result **= $num2;
-echo $result;
-```
+ArbiMath PHP offers a comprehensive set of methods:
 
-## Available Methods
+*   **Arithmetic:** `add()`, `sub()`, `mul()`, `div()`, `mod()`, `pow()`
+*   **Comparison:** `isEqual()`, `isSmaller()`, `isGreater()`, `isSmallerOrEqual()`, `isGreaterOrEqual()`
+*   **Rounding/Truncating:** `round()`, `floor()`, `ceil()`, `truncate()`
+*   **Logarithms:** `ln()`, `log()`
+*   **Other Utilities:** `abs()`, `isNegative()`, `isPositive()`, `inc()`, `dec()`, `format()`, `getHumanValue()`, `getHumanUnit()`, `duplicate()`, `toString()` / `__toString()`
 
-Methods accept `string` or `ArbiNumber` instances as arguments where applicable.
+*(Refer to the source code or future API documentation for detailed usage.)*
 
-- `add(string|ArbiNumber $number)`: Addition
-- `sub(string|ArbiNumber $number)`: Subtraction
-- `mul(string|ArbiNumber $number)`: Multiplication
-- `div(string|ArbiNumber $number)`: Division
-- `mod(string|ArbiNumber $number)`: Modulus
-- `pow(string|ArbiNumber $number)`: Power
-- `abs()`: Absolute value
-- `floor()`: Round down to the nearest integer
-- `ceil()`: Round up to the nearest integer
-- `round(int $precision = 0)`: Round to specified precision (half up)
-- `truncate(int $precision = 0)`: Truncate to specified precision
-- `ln()`: Natural logarithm (base e)
-- `log(string|ArbiNumber $base)`: Logarithm to a specified base
-- `isEqual(string|ArbiNumber $number)`: Equality comparison (`==`)
-- `isSmaller(string|ArbiNumber $number)`: Less than comparison (`<`)
-- `isSmallerOrEqual(string|ArbiNumber $number)`: Less than or equal comparison (`<=`)
-- `isGreater(string|ArbiNumber $number)`: Greater than comparison (`>`)
-- `isGreaterOrEqual(string|ArbiNumber $number)`: Greater than or equal comparison (`>=`)
-- `isNegative()`: Check if the number is negative
-- `isPositive()`: Check if the number is positive
-- `inc()`: Increment by 1
-- `dec()`: Decrement by 1
-- `format(int $decimals = 0)`: Format number with thousands separators and specified decimal places
-- `getHumanValue()`: Get the numeric value scaled to its human-readable unit (K, M, G, etc.)
-- `getHumanUnit()`: Get the human-readable unit (K, M, G, etc.) or empty string
-- `duplicate()`: Create a new instance with the same value
-- `toString()` / `__toString()`: Get the string representation
+## ❤️ Support The Project ❤️
 
-For a complete list of methods and their usage, please refer to the [API documentation](link-to-api-docs).
+If ArbiMath PHP helps you tackle complex calculations and saves you time, consider showing your appreciation! Your support helps maintain and improve this library.
 
-## Contributing
+<a href="https://buymeacoffee.com/shtse8" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+## Contributing 🤝
 
-## License
+Found a bug or have a feature request? Contributions are highly welcome! Please feel free to open an issue or submit a Pull Request.
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+## License 📄
 
-## Acknowledgments
-
-- Thanks to the PHP team for the BCMath extension
-- Thanks to the PECL Operator team for enabling operator overloading in PHP
-
----
-
-This library aims to provide a simple, optimal, and type-safe interface for arbitrary precision math in PHP.
+ArbiMath PHP is open-source software licensed under the [MIT License](LICENSE).
