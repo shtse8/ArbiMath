@@ -1,5 +1,5 @@
 {
-    "name": "shtse8/sotimath",
+    "name": "shtse8/arbimath",
     "description": "Arbitrary precision mathematics library",
     "type": "library",
     "license": "MIT",
@@ -11,12 +11,12 @@
     ],
     "autoload": {
         "psr-4": {
-            "Shtse8\\SotiMath\\": "src/"
+            "Shtse8\\ArbiMath\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Shtse8\\SotiMath\\Tests\\": "tests/"
+            "Shtse8\\ArbiMath\\Tests\\": "tests/"
         }
     },
     "require": {

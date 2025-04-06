@@ -2,11 +2,11 @@
 # System Patterns
 
 ## Architecture
-- Single-class library (`SotiNumber.php`) within the `Shtse8\SotiMath` namespace.
+- Single-class library (`ArbiNumber.php`) within the `Shtse8\ArbiMath PHP` namespace.
 - Relies heavily on the PHP BCMath extension for arbitrary precision.
 
 ## Key Technical Decisions
-- **Immutability:** `SotiNumber` instances are immutable.
+- **Immutability:** `ArbiNumber` instances are immutable.
 - **BCMath Dependency:** Core calculations delegated to BCMath functions.
 - **Error Handling:** Using exceptions (`DivisionByZeroError`, `ValueError`).
 - **Type Safety:** Leveraging PHP 8.0 strict types and type hinting.

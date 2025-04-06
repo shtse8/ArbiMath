@@ -1,12 +1,12 @@
-# SotiNumber
+# ArbiNumber
 
-**SotiNumber** is a powerful PHP library for arbitrary precision mathematics. It provides a simple, optimal, and type-safe way to perform high-precision calculations, leveraging the BCMath extension and optionally the PECL Operator extension for enhanced performance.
+**ArbiNumber** is a powerful PHP library for arbitrary precision mathematics. It provides a simple, optimal, and type-safe way to perform high-precision calculations, leveraging the BCMath extension and optionally the PECL Operator extension for enhanced performance.
 
 ## Features
 
 - **Arbitrary Precision Arithmetic**: Perform calculations with any desired level of precision.
 - **Support for Scientific Notation**: Seamlessly handle numbers in scientific format.
-- **Integration with PHP's Native Functions**: Easily use SotiNumber with PHP’s built-in mathematical functions.
+- **Integration with PHP's Native Functions**: Easily use ArbiNumber with PHP’s built-in mathematical functions.
 - **Optional Operator Overloading**: For intuitive and natural syntax using the PECL Operator extension.
 - **Comprehensive Mathematical Operations**: Includes addition, subtraction, multiplication, division, power, modulus, and more.
 - **Human-Readable Formatting Options**: Format numbers with thousands separators and custom decimal places.
@@ -24,7 +24,7 @@
 ### Via Composer
 
 ```bash
-composer require shtse8/sotimath
+composer require shtse8/arbimath
 ```
 
 ### Installing BCMath
@@ -72,10 +72,10 @@ Note: Adjust the PHP version in the paths if you're using a different version.
 ### Basic Usage
 
 ```php
-use Shtse8\SotiMath\SotiNumber;
+use Shtse8\ArbiMath PHP\ArbiNumber;
 
-$num1 = new SotiNumber("1.8573958822565E+17");
-$num2 = new SotiNumber("111");
+$num1 = new ArbiNumber("1.8573958822565E+17");
+$num2 = new ArbiNumber("111");
 
 $result = $num1->add($num2)->pow($num2);
 echo $result->toString();
@@ -84,10 +84,10 @@ echo $result->toString();
 ### With Operator Overloading (requires PECL Operator)
 
 ```php
-use Shtse8\SotiMath\SotiNumber;
+use Shtse8\ArbiMath PHP\ArbiNumber;
 
-$num1 = new SotiNumber("1.8573958822565E+17");
-$num2 = new SotiNumber("111");
+$num1 = new ArbiNumber("1.8573958822565E+17");
+$num2 = new ArbiNumber("111");
 
 $result = $num1 + $num2;
 $result **= $num2;
@@ -96,26 +96,26 @@ echo $result;
 
 ## Available Methods
 
-Methods accept `string` or `SotiNumber` instances as arguments where applicable.
+Methods accept `string` or `ArbiNumber` instances as arguments where applicable.
 
-- `add(string|SotiNumber $number)`: Addition
-- `sub(string|SotiNumber $number)`: Subtraction
-- `mul(string|SotiNumber $number)`: Multiplication
-- `div(string|SotiNumber $number)`: Division
-- `mod(string|SotiNumber $number)`: Modulus
-- `pow(string|SotiNumber $number)`: Power
+- `add(string|ArbiNumber $number)`: Addition
+- `sub(string|ArbiNumber $number)`: Subtraction
+- `mul(string|ArbiNumber $number)`: Multiplication
+- `div(string|ArbiNumber $number)`: Division
+- `mod(string|ArbiNumber $number)`: Modulus
+- `pow(string|ArbiNumber $number)`: Power
 - `abs()`: Absolute value
 - `floor()`: Round down to the nearest integer
 - `ceil()`: Round up to the nearest integer
 - `round(int $precision = 0)`: Round to specified precision (half up)
 - `truncate(int $precision = 0)`: Truncate to specified precision
 - `ln()`: Natural logarithm (base e)
-- `log(string|SotiNumber $base)`: Logarithm to a specified base
-- `isEqual(string|SotiNumber $number)`: Equality comparison (`==`)
-- `isSmaller(string|SotiNumber $number)`: Less than comparison (`<`)
-- `isSmallerOrEqual(string|SotiNumber $number)`: Less than or equal comparison (`<=`)
-- `isGreater(string|SotiNumber $number)`: Greater than comparison (`>`)
-- `isGreaterOrEqual(string|SotiNumber $number)`: Greater than or equal comparison (`>=`)
+- `log(string|ArbiNumber $base)`: Logarithm to a specified base
+- `isEqual(string|ArbiNumber $number)`: Equality comparison (`==`)
+- `isSmaller(string|ArbiNumber $number)`: Less than comparison (`<`)
+- `isSmallerOrEqual(string|ArbiNumber $number)`: Less than or equal comparison (`<=`)
+- `isGreater(string|ArbiNumber $number)`: Greater than comparison (`>`)
+- `isGreaterOrEqual(string|ArbiNumber $number)`: Greater than or equal comparison (`>=`)
 - `isNegative()`: Check if the number is negative
 - `isPositive()`: Check if the number is positive
 - `inc()`: Increment by 1

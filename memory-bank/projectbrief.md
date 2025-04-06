@@ -1,8 +1,8 @@
 <!-- Version: 1.0 | Last Updated: 2025-06-04 -->
-# Project Brief: SotiMath
+# Project Brief: ArbiMath PHP
 
 ## 1. Overview
-A PHP library for handling mathematical operations, specifically focusing on the SotiNumber class.
+A PHP library for handling mathematical operations, specifically focusing on the ArbiNumber class.
 
 ## 2. Goals
 - Understand the existing codebase.
@@ -11,6 +11,6 @@ A PHP library for handling mathematical operations, specifically focusing on the
 - Establish a Memory Bank system for project knowledge management.
 
 ## 3. Scope
-- Analysis and refactoring of `SotiNumber.php`.
+- Analysis and refactoring of `ArbiNumber.php`.
 - Updates to documentation (`README.md`).
 - Implementation of Memory Bank files.

@@ -2,7 +2,7 @@
 # Progress Tracker
 
 ## What Works
-- `SotiNumber.php` has basic structure and functionality.
+- `ArbiNumber.php` has basic structure and functionality.
 - Initial PHP 8.0 compatibility issues addressed.
 - Basic type hinting added.
 - Division by zero errors handled.

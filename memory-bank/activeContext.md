@@ -2,7 +2,7 @@
 # Active Context
 
 ## Current Focus
-- Completing initial refactoring and improvements for `SotiNumber.php`.
+- Completing initial refactoring and improvements for `ArbiNumber.php`.
 - Preparing for unit testing and documentation updates.
 
 ## Recent Changes
@@ -14,7 +14,7 @@
 - Refactored `log()` method to use `LN10` constant for `log10` calculation.
 
 ## Next Steps
-1. Add comprehensive unit tests for `SotiNumber` class using PHPUnit.
+1. Add comprehensive unit tests for `ArbiNumber` class using PHPUnit.
 2. Update `README.md` to reflect PHP 8.0 compatibility, API changes (`duplicate`), and potentially revised PECL Operator information.
 3. Commit the changes related to `ln()`/`log()` refactoring and `__is_*` removal.
 

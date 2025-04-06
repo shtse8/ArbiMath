@@ -1,8 +1,8 @@
 <!-- Version: 1.2 | Last Updated: 2025-06-04 -->
-# Cline Rules for SotiMath
+# Cline Rules for ArbiMath PHP
 
 ## Project-Specific Patterns
-- **Immutability:** `SotiNumber` objects MUST remain immutable. All methods performing calculations or modifications MUST return a new `SotiNumber` instance.
+- **Immutability:** `ArbiNumber` objects MUST remain immutable. All methods performing calculations or modifications MUST return a new `ArbiNumber` instance.
 
 ## Preferences
 - Use PHP 8.0 features where appropriate.

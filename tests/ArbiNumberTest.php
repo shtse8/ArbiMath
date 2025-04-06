@@ -2,44 +2,44 @@
 
 declare(strict_types=1);
 
-namespace Shtse8\SotiMath\Tests;
+namespace Shtse8\ArbiMath\Tests;
 
 use PHPUnit\Framework\TestCase;
-use Shtse8\SotiMath\SotiNumber;
+use Shtse8\ArbiMath\ArbiNumber;
 
-final class SotiNumberTest extends TestCase
+final class ArbiNumberTest extends TestCase
 {
     /**
-     * @covers \Shtse8\SotiMath\SotiNumber::__construct
-     * @covers \Shtse8\SotiMath\SotiNumber::normalizeFloat
+     * @covers \Shtse8\ArbiMath\ArbiNumber::__construct
+     * @covers \Shtse8\ArbiMath\ArbiNumber::normalizeFloat
      */
     public function testCanBeCreatedFromString(): void
     {
-        $num = new SotiNumber('123.456');
-        $this->assertInstanceOf(SotiNumber::class, $num);
+        $num = new ArbiNumber('123.456');
+        $this->assertInstanceOf(ArbiNumber::class, $num);
     }
 
     /**
-     * @covers \Shtse8\SotiMath\SotiNumber::toString
-     * @covers \Shtse8\SotiMath\SotiNumber::__toString
-     * @covers \Shtse8\SotiMath\SotiNumber::__construct
-     * @covers \Shtse8\SotiMath\SotiNumber::normalizeFloat
+     * @covers \Shtse8\ArbiMath\ArbiNumber::toString
+     * @covers \Shtse8\ArbiMath\ArbiNumber::__toString
+     * @covers \Shtse8\ArbiMath\ArbiNumber::__construct
+     * @covers \Shtse8\ArbiMath\ArbiNumber::normalizeFloat
      */
     public function testToStringReturnsCorrectString(): void
     {
-        $num = new SotiNumber('123.456000');
+        $num = new ArbiNumber('123.456000');
         $this->assertSame('123.456', $num->toString());
 
-        $numZero = new SotiNumber('0.000');
+        $numZero = new ArbiNumber('0.000');
         $this->assertSame('0', $numZero->toString());
 
-        $numInt = new SotiNumber('789');
+        $numInt = new ArbiNumber('789');
         $this->assertSame('789', $numInt->toString());
 
-        $numSci = new SotiNumber('1.23E+3'); // Should be normalized to 1230
+        $numSci = new ArbiNumber('1.23E+3'); // Should be normalized to 1230
         $this->assertSame('1230', $numSci->toString());
 
-         $numNegSci = new SotiNumber('-5.6E-2'); // Should be normalized to -0.056
+         $numNegSci = new ArbiNumber('-5.6E-2'); // Should be normalized to -0.056
          $this->assertSame('-0.056', $numNegSci->toString());
     }
 
@@ -48,14 +48,14 @@ final class SotiNumberTest extends TestCase
 
     /**
      * @dataProvider additionProvider
-     * @covers \Shtse8\SotiMath\SotiNumber::add
-     * @covers \Shtse8\SotiMath\SotiNumber::__construct
-     * @covers \Shtse8\SotiMath\SotiNumber::normalizeFloat
+     * @covers \Shtse8\ArbiMath\ArbiNumber::add
+     * @covers \Shtse8\ArbiMath\ArbiNumber::__construct
+     * @covers \Shtse8\ArbiMath\ArbiNumber::normalizeFloat
      */
     public function testAddition(string $a, string $b, string $expected): void
     {
-        $numA = new SotiNumber($a);
-        $numB = new SotiNumber($b);
+        $numA = new ArbiNumber($a);
+        $numB = new ArbiNumber($b);
         $this->assertSame($expected, $numA->add($numB)->toString());
         // Test with string argument as well
         $this->assertSame($expected, $numA->add($b)->toString());
@@ -78,14 +78,14 @@ final class SotiNumberTest extends TestCase
 
     /**
      * @dataProvider subtractionProvider
-     * @covers \Shtse8\SotiMath\SotiNumber::sub
-     * @covers \Shtse8\SotiMath\SotiNumber::__construct
-     * @covers \Shtse8\SotiMath\SotiNumber::normalizeFloat
+     * @covers \Shtse8\ArbiMath\ArbiNumber::sub
+     * @covers \Shtse8\ArbiMath\ArbiNumber::__construct
+     * @covers \Shtse8\ArbiMath\ArbiNumber::normalizeFloat
      */
     public function testSubtraction(string $a, string $b, string $expected): void
     {
-        $numA = new SotiNumber($a);
-        $numB = new SotiNumber($b);
+        $numA = new ArbiNumber($a);
+        $numB = new ArbiNumber($b);
         $this->assertSame($expected, $numA->sub($numB)->toString());
         $this->assertSame($expected, $numA->sub($b)->toString());
     }
@@ -106,14 +106,14 @@ final class SotiNumberTest extends TestCase
 
     /**
      * @dataProvider multiplicationProvider
-     * @covers \Shtse8\SotiMath\SotiNumber::mul
-     * @covers \Shtse8\SotiMath\SotiNumber::__construct
-     * @covers \Shtse8\SotiMath\SotiNumber::normalizeFloat
+     * @covers \Shtse8\ArbiMath\ArbiNumber::mul
+     * @covers \Shtse8\ArbiMath\ArbiNumber::__construct
+     * @covers \Shtse8\ArbiMath\ArbiNumber::normalizeFloat
      */
     public function testMultiplication(string $a, string $b, string $expected): void
     {
-        $numA = new SotiNumber($a);
-        $numB = new SotiNumber($b);
+        $numA = new ArbiNumber($a);
+        $numB = new ArbiNumber($b);
         $this->assertSame($expected, $numA->mul($numB)->toString());
         $this->assertSame($expected, $numA->mul($b)->toString());
     }
@@ -133,14 +133,14 @@ final class SotiNumberTest extends TestCase
 
     /**
      * @dataProvider divisionProvider
-     * @covers \Shtse8\SotiMath\SotiNumber::div
-     * @covers \Shtse8\SotiMath\SotiNumber::__construct
-     * @covers \Shtse8\SotiMath\SotiNumber::normalizeFloat
+     * @covers \Shtse8\ArbiMath\ArbiNumber::div
+     * @covers \Shtse8\ArbiMath\ArbiNumber::__construct
+     * @covers \Shtse8\ArbiMath\ArbiNumber::normalizeFloat
      */
     public function testDivision(string $a, string $b, string $expected): void
     {
-        $numA = new SotiNumber($a);
-        $numB = new SotiNumber($b);
+        $numA = new ArbiNumber($a);
+        $numB = new ArbiNumber($b);
         $this->assertSame($expected, $numA->div($numB)->toString());
         $this->assertSame($expected, $numA->div($b)->toString());
     }
@@ -160,14 +160,14 @@ final class SotiNumberTest extends TestCase
 
     /**
      * @dataProvider modulusProvider
-     * @covers \Shtse8\SotiMath\SotiNumber::mod
-     * @covers \Shtse8\SotiMath\SotiNumber::__construct
-     * @covers \Shtse8\SotiMath\SotiNumber::normalizeFloat
+     * @covers \Shtse8\ArbiMath\ArbiNumber::mod
+     * @covers \Shtse8\ArbiMath\ArbiNumber::__construct
+     * @covers \Shtse8\ArbiMath\ArbiNumber::normalizeFloat
      */
     public function testModulus(string $a, string $b, string $expected): void
     {
-        $numA = new SotiNumber($a);
-        $numB = new SotiNumber($b);
+        $numA = new ArbiNumber($a);
+        $numB = new ArbiNumber($b);
         $this->assertSame($expected, $numA->mod($numB)->toString());
         $this->assertSame($expected, $numA->mod($b)->toString());
     }
@@ -185,14 +185,14 @@ final class SotiNumberTest extends TestCase
 
     /**
      * @dataProvider powerProvider
-     * @covers \Shtse8\SotiMath\SotiNumber::pow
-     * @covers \Shtse8\SotiMath\SotiNumber::__construct
-     * @covers \Shtse8\SotiMath\SotiNumber::normalizeFloat
+     * @covers \Shtse8\ArbiMath\ArbiNumber::pow
+     * @covers \Shtse8\ArbiMath\ArbiNumber::__construct
+     * @covers \Shtse8\ArbiMath\ArbiNumber::normalizeFloat
      */
     public function testPower(string $base, string $exp, string $expected): void
     {
-        $numBase = new SotiNumber($base);
-        $numExp = new SotiNumber($exp);
+        $numBase = new ArbiNumber($base);
+        $numExp = new ArbiNumber($exp);
         $this->assertSame($expected, $numBase->pow($numExp)->toString());
         $this->assertSame($expected, $numBase->pow($exp)->toString());
     }
@@ -218,13 +218,13 @@ final class SotiNumberTest extends TestCase
 
     /**
      * @dataProvider floorProvider
-     * @covers \Shtse8\SotiMath\SotiNumber::floor
-     * @covers \Shtse8\SotiMath\SotiNumber::isNegative
-     * @covers \Shtse8\SotiMath\SotiNumber::__construct
+     * @covers \Shtse8\ArbiMath\ArbiNumber::floor
+     * @covers \Shtse8\ArbiMath\ArbiNumber::isNegative
+     * @covers \Shtse8\ArbiMath\ArbiNumber::__construct
      */
     public function testFloor(string $value, string $expected): void
     {
-        $num = new SotiNumber($value);
+        $num = new ArbiNumber($value);
         $this->assertSame($expected, $num->floor()->toString());
     }
 
@@ -245,13 +245,13 @@ final class SotiNumberTest extends TestCase
 
     /**
      * @dataProvider ceilProvider
-     * @covers \Shtse8\SotiMath\SotiNumber::ceil
-     * @covers \Shtse8\SotiMath\SotiNumber::isPositive
-     * @covers \Shtse8\SotiMath\SotiNumber::__construct
+     * @covers \Shtse8\ArbiMath\ArbiNumber::ceil
+     * @covers \Shtse8\ArbiMath\ArbiNumber::isPositive
+     * @covers \Shtse8\ArbiMath\ArbiNumber::__construct
      */
     public function testCeil(string $value, string $expected): void
     {
-        $num = new SotiNumber($value);
+        $num = new ArbiNumber($value);
         $this->assertSame($expected, $num->ceil()->toString());
     }
 
@@ -272,15 +272,15 @@ final class SotiNumberTest extends TestCase
 
     /**
      * @dataProvider absoluteProvider
-     * @covers \Shtse8\SotiMath\SotiNumber::abs
-     * @covers \Shtse8\SotiMath\SotiNumber::isNegative
-     * @covers \Shtse8\SotiMath\SotiNumber::mul
-     * @covers \Shtse8\SotiMath\SotiNumber::duplicate
-     * @covers \Shtse8\SotiMath\SotiNumber::__construct
+     * @covers \Shtse8\ArbiMath\ArbiNumber::abs
+     * @covers \Shtse8\ArbiMath\ArbiNumber::isNegative
+     * @covers \Shtse8\ArbiMath\ArbiNumber::mul
+     * @covers \Shtse8\ArbiMath\ArbiNumber::duplicate
+     * @covers \Shtse8\ArbiMath\ArbiNumber::__construct
      */
     public function testAbsolute(string $value, string $expected): void
     {
-        $num = new SotiNumber($value);
+        $num = new ArbiNumber($value);
         $this->assertSame($expected, $num->abs()->toString());
     }
 
@@ -301,18 +301,18 @@ final class SotiNumberTest extends TestCase
 
     /**
      * @dataProvider comparisonProvider
-     * @covers \Shtse8\SotiMath\SotiNumber::isEqual
-     * @covers \Shtse8\SotiMath\SotiNumber::isSmaller
-     * @covers \Shtse8\SotiMath\SotiNumber::isGreater
-     * @covers \Shtse8\SotiMath\SotiNumber::isSmallerOrEqual
-     * @covers \Shtse8\SotiMath\SotiNumber::isGreaterOrEqual
-     * @covers \Shtse8\SotiMath\SotiNumber::__construct
-     * @covers \Shtse8\SotiMath\SotiNumber::normalizeFloat
+     * @covers \Shtse8\ArbiMath\ArbiNumber::isEqual
+     * @covers \Shtse8\ArbiMath\ArbiNumber::isSmaller
+     * @covers \Shtse8\ArbiMath\ArbiNumber::isGreater
+     * @covers \Shtse8\ArbiMath\ArbiNumber::isSmallerOrEqual
+     * @covers \Shtse8\ArbiMath\ArbiNumber::isGreaterOrEqual
+     * @covers \Shtse8\ArbiMath\ArbiNumber::__construct
+     * @covers \Shtse8\ArbiMath\ArbiNumber::normalizeFloat
      */
     public function testComparisons(string $a, string $b, bool $eq, bool $lt, bool $gt, bool $lte, bool $gte): void
     {
-        $numA = new SotiNumber($a);
-        $numB = new SotiNumber($b);
+        $numA = new ArbiNumber($a);
+        $numB = new ArbiNumber($b);
 
         $this->assertSame($eq, $numA->isEqual($numB));
         $this->assertSame($eq, $numA->isEqual($b));
@@ -353,13 +353,13 @@ final class SotiNumberTest extends TestCase
 
     /**
      * @dataProvider signProvider
-     * @covers \Shtse8\SotiMath\SotiNumber::isNegative
-     * @covers \Shtse8\SotiMath\SotiNumber::isPositive
-     * @covers \Shtse8\SotiMath\SotiNumber::__construct
+     * @covers \Shtse8\ArbiMath\ArbiNumber::isNegative
+     * @covers \Shtse8\ArbiMath\ArbiNumber::isPositive
+     * @covers \Shtse8\ArbiMath\ArbiNumber::__construct
      */
     public function testSignMethods(string $val, bool $isNegative, bool $isPositive): void
     {
-        $num = new SotiNumber($val);
+        $num = new ArbiNumber($val);
         $this->assertSame($isNegative, $num->isNegative());
         $this->assertSame($isPositive, $num->isPositive());
     }

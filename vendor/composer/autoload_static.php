@@ -14,8 +14,8 @@ class ComposerStaticInit61e4d1096421118b38d280214cd00832
     public static $prefixLengthsPsr4 = array (
         'S' => 
         array (
-            'Shtse8\\SotiMath\\Tests\\' => 22,
-            'Shtse8\\SotiMath\\' => 16,
+            'Shtse8\\ArbiMath\\Tests\\' => 22,
+            'Shtse8\\ArbiMath\\' => 16,
         ),
         'P' => 
         array (
@@ -28,11 +28,11 @@ class ComposerStaticInit61e4d1096421118b38d280214cd00832
     );
 
     public static $prefixDirsPsr4 = array (
-        'Shtse8\\SotiMath\\Tests\\' => 
+        'Shtse8\\ArbiMath\\Tests\\' => 
         array (
             0 => __DIR__ . '/../..' . '/tests',
         ),
-        'Shtse8\\SotiMath\\' => 
+        'Shtse8\\ArbiMath\\' => 
         array (
             0 => __DIR__ . '/../..' . '/src',
         ),

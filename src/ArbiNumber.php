@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Shtse8\SotiMath;
+namespace Shtse8\ArbiMath;
 
 use DivisionByZeroError;
 use ValueError;
@@ -11,7 +11,7 @@ use ValueError;
  * A class for arbitrary precision mathematics using BCMath.
  * Provides immutable objects for calculations.
  */
-class SotiNumber
+class ArbiNumber
 {
     private const INTERNAL_SCALE = 20;
     private const ITERATIONS = 100;
@@ -81,7 +81,7 @@ class SotiNumber
      * Creates a new instance with the same value.
      * Renamed from clone() due to PHP keyword conflict.
      *
-     * @return self A new SotiNumber instance.
+     * @return self A new ArbiNumber instance.
      */
     public function duplicate(): self
     {
@@ -92,49 +92,49 @@ class SotiNumber
     /**
      * Adds a number to this number.
      *
-     * @param string|SotiNumber $delta The number to add.
-     * @return self A new SotiNumber instance representing the sum.
+     * @param string|ArbiNumber $delta The number to add.
+     * @return self A new ArbiNumber instance representing the sum.
      */
-    public function add(string|SotiNumber $delta): self
+    public function add(string|ArbiNumber $delta): self
     {
-        $normalizedDelta = $delta instanceof SotiNumber ? $delta->value : $this->normalizeFloat($delta);
+        $normalizedDelta = $delta instanceof ArbiNumber ? $delta->value : $this->normalizeFloat($delta);
         return new self(bcadd($this->value, $normalizedDelta));
     }
 
     /**
      * Subtracts a number from this number.
      *
-     * @param string|SotiNumber $delta The number to subtract.
-     * @return self A new SotiNumber instance representing the difference.
+     * @param string|ArbiNumber $delta The number to subtract.
+     * @return self A new ArbiNumber instance representing the difference.
      */
-    public function sub(string|SotiNumber $delta): self
+    public function sub(string|ArbiNumber $delta): self
     {
-        $normalizedDelta = $delta instanceof SotiNumber ? $delta->value : $this->normalizeFloat($delta);
+        $normalizedDelta = $delta instanceof ArbiNumber ? $delta->value : $this->normalizeFloat($delta);
         return new self(bcsub($this->value, $normalizedDelta));
     }
 
     /**
      * Multiplies this number by another number.
      *
-     * @param string|SotiNumber $delta The number to multiply by.
-     * @return self A new SotiNumber instance representing the product.
+     * @param string|ArbiNumber $delta The number to multiply by.
+     * @return self A new ArbiNumber instance representing the product.
      */
-    public function mul(string|SotiNumber $delta): self
+    public function mul(string|ArbiNumber $delta): self
     {
-        $normalizedDelta = $delta instanceof SotiNumber ? $delta->value : $this->normalizeFloat($delta);
+        $normalizedDelta = $delta instanceof ArbiNumber ? $delta->value : $this->normalizeFloat($delta);
         return new self(bcmul($this->value, $normalizedDelta));
     }
 
     /**
      * Divides this number by another number.
      *
-     * @param string|SotiNumber $delta The divisor.
-     * @return self A new SotiNumber instance representing the quotient.
+     * @param string|ArbiNumber $delta The divisor.
+     * @return self A new ArbiNumber instance representing the quotient.
      * @throws DivisionByZeroError If the divisor is zero.
      */
-    public function div(string|SotiNumber $delta): self
+    public function div(string|ArbiNumber $delta): self
     {
-        $normalizedDelta = $delta instanceof SotiNumber ? $delta->value : $this->normalizeFloat($delta);
+        $normalizedDelta = $delta instanceof ArbiNumber ? $delta->value : $this->normalizeFloat($delta);
         if (bccomp($normalizedDelta, '0') === 0) {
             throw new DivisionByZeroError("Division by zero");
         }
@@ -151,13 +151,13 @@ class SotiNumber
     /**
      * Calculates the modulus of this number by another number.
      *
-     * @param string|SotiNumber $delta The divisor.
-     * @return self A new SotiNumber instance representing the modulus.
+     * @param string|ArbiNumber $delta The divisor.
+     * @return self A new ArbiNumber instance representing the modulus.
      * @throws DivisionByZeroError If the divisor is zero (ValueError in PHP 8+ for bcmod).
      */
-    public function mod(string|SotiNumber $delta): self
+    public function mod(string|ArbiNumber $delta): self
     {
-        $normalizedDelta = $delta instanceof SotiNumber ? $delta->value : $this->normalizeFloat($delta);
+        $normalizedDelta = $delta instanceof ArbiNumber ? $delta->value : $this->normalizeFloat($delta);
         // bcmod throws ValueError on division by zero in PHP 8.0+
         try {
             $result = bcmod($this->value, $normalizedDelta);
@@ -181,12 +181,12 @@ class SotiNumber
     /**
      * Raises this number to the power of another number.
      *
-     * @param string|SotiNumber $delta The exponent.
-     * @return self A new SotiNumber instance representing the result.
+     * @param string|ArbiNumber $delta The exponent.
+     * @return self A new ArbiNumber instance representing the result.
      */
-    public function pow(string|SotiNumber $delta): self
+    public function pow(string|ArbiNumber $delta): self
     {
-        $exponent = $delta instanceof SotiNumber ? $delta->value : $this->normalizeFloat($delta);
+        $exponent = $delta instanceof ArbiNumber ? $delta->value : $this->normalizeFloat($delta);
 
         // Check if the exponent has a fractional part
         if (str_contains($exponent, '.')) {
@@ -207,7 +207,7 @@ class SotiNumber
      * Uses normalization to bring the value closer to 1 for faster Taylor series convergence.
      * ln(x) = ln(y * 10^k) = ln(y) + k * ln(10)
      *
-     * @return self A new SotiNumber instance representing the natural logarithm.
+     * @return self A new ArbiNumber instance representing the natural logarithm.
      * @throws ValueError If the number is not positive.
      */
     public function ln(): self
@@ -302,13 +302,13 @@ class SotiNumber
 /**
  * Calculates the logarithm to a specified base.
  *
- * @param string|SotiNumber $base The base of the logarithm.
- * @return self A new SotiNumber instance representing the logarithm.
+ * @param string|ArbiNumber $base The base of the logarithm.
+ * @return self A new ArbiNumber instance representing the logarithm.
  * @throws ValueError If base is non-positive or equals 1.
  */
-    public function log(string|SotiNumber $base): self
+    public function log(string|ArbiNumber $base): self
     {
-        $baseNum = $base instanceof SotiNumber ? $base : new self($base);
+        $baseNum = $base instanceof ArbiNumber ? $base : new self($base);
 
         if ($baseNum->isSmallerOrEqual('0') || $baseNum->isEqual('1')) {
             throw new ValueError("Logarithm base must be positive and not equal to 1.");
@@ -333,7 +333,7 @@ class SotiNumber
     /**
      * Rounds the number down to the nearest integer (floor value).
      *
-     * @return self A new SotiNumber instance representing the floor value.
+     * @return self A new ArbiNumber instance representing the floor value.
      */
     public function floor(): self
     {
@@ -351,7 +351,7 @@ class SotiNumber
     /**
      * Rounds the number up to the nearest integer (ceiling value).
      *
-     * @return self A new SotiNumber instance representing the ceiling value.
+     * @return self A new ArbiNumber instance representing the ceiling value.
      */
     public function ceil(): self
     {
@@ -368,7 +368,7 @@ class SotiNumber
     /**
      * Returns the absolute value of the number.
      *
-     * @return self A new SotiNumber instance representing the absolute value.
+     * @return self A new ArbiNumber instance representing the absolute value.
      */
     public function abs(): self
     {
@@ -380,7 +380,7 @@ class SotiNumber
      * Truncates the number to a specified number of decimal places.
      *
      * @param int $precision The number of decimal places (non-negative).
-     * @return self A new SotiNumber instance representing the truncated value.
+     * @return self A new ArbiNumber instance representing the truncated value.
      * @throws ValueError If precision is negative.
      */
     public function truncate(int $precision = 0): self
@@ -397,7 +397,7 @@ class SotiNumber
      * Rounds the number to a specified number of decimal places (half up).
      *
      * @param int $precision The number of decimal places (non-negative).
-     * @return self A new SotiNumber instance representing the rounded value.
+     * @return self A new ArbiNumber instance representing the rounded value.
      * @throws ValueError If precision is negative.
      */
     public function round(int $precision = 0): self
@@ -420,60 +420,60 @@ class SotiNumber
     /**
      * Checks if this number is equal to another number.
      *
-     * @param string|SotiNumber $arg The number to compare against.
+     * @param string|ArbiNumber $arg The number to compare against.
      * @return bool True if equal, false otherwise.
      */
-    public function isEqual(string|SotiNumber $arg): bool
+    public function isEqual(string|ArbiNumber $arg): bool
     {
-        $normalizedArg = $arg instanceof SotiNumber ? $arg->value : $this->normalizeFloat($arg);
+        $normalizedArg = $arg instanceof ArbiNumber ? $arg->value : $this->normalizeFloat($arg);
         return bccomp($this->value, $normalizedArg) === 0;
     }
 
     /**
      * Checks if this number is smaller than another number.
      *
-     * @param string|SotiNumber $arg The number to compare against.
+     * @param string|ArbiNumber $arg The number to compare against.
      * @return bool True if this number is smaller, false otherwise.
      */
-    public function isSmaller(string|SotiNumber $arg): bool
+    public function isSmaller(string|ArbiNumber $arg): bool
     {
-        $normalizedArg = $arg instanceof SotiNumber ? $arg->value : $this->normalizeFloat($arg);
+        $normalizedArg = $arg instanceof ArbiNumber ? $arg->value : $this->normalizeFloat($arg);
         return bccomp($this->value, $normalizedArg) === -1;
     }
 
     /**
      * Checks if this number is smaller than or equal to another number.
      *
-     * @param string|SotiNumber $arg The number to compare against.
+     * @param string|ArbiNumber $arg The number to compare against.
      * @return bool True if this number is smaller or equal, false otherwise.
      */
-    public function isSmallerOrEqual(string|SotiNumber $arg): bool
+    public function isSmallerOrEqual(string|ArbiNumber $arg): bool
     {
-        $normalizedArg = $arg instanceof SotiNumber ? $arg->value : $this->normalizeFloat($arg);
+        $normalizedArg = $arg instanceof ArbiNumber ? $arg->value : $this->normalizeFloat($arg);
         return bccomp($this->value, $normalizedArg) !== 1; // Not greater
     }
 
     /**
      * Checks if this number is greater than another number.
      *
-     * @param string|SotiNumber $arg The number to compare against.
+     * @param string|ArbiNumber $arg The number to compare against.
      * @return bool True if this number is greater, false otherwise.
      */
-    public function isGreater(string|SotiNumber $arg): bool
+    public function isGreater(string|ArbiNumber $arg): bool
     {
-        $normalizedArg = $arg instanceof SotiNumber ? $arg->value : $this->normalizeFloat($arg);
+        $normalizedArg = $arg instanceof ArbiNumber ? $arg->value : $this->normalizeFloat($arg);
         return bccomp($this->value, $normalizedArg) === 1;
     }
 
     /**
      * Checks if this number is greater than or equal to another number.
      *
-     * @param string|SotiNumber $arg The number to compare against.
+     * @param string|ArbiNumber $arg The number to compare against.
      * @return bool True if this number is greater or equal, false otherwise.
      */
-    public function isGreaterOrEqual(string|SotiNumber $arg): bool
+    public function isGreaterOrEqual(string|ArbiNumber $arg): bool
     {
-        $normalizedArg = $arg instanceof SotiNumber ? $arg->value : $this->normalizeFloat($arg);
+        $normalizedArg = $arg instanceof ArbiNumber ? $arg->value : $this->normalizeFloat($arg);
         return bccomp($this->value, $normalizedArg) !== -1; // Not smaller
     }
 
@@ -500,7 +500,7 @@ class SotiNumber
     /**
      * Increments the number by 1.
      *
-     * @return self A new SotiNumber instance representing the incremented value.
+     * @return self A new ArbiNumber instance representing the incremented value.
      */
     public function inc(): self
     {
@@ -510,7 +510,7 @@ class SotiNumber
     /**
      * Decrements the number by 1.
      *
-     * @return self A new SotiNumber instance representing the decremented value.
+     * @return self A new ArbiNumber instance representing the decremented value.
      */
     public function dec(): self
     {
@@ -565,7 +565,7 @@ class SotiNumber
     /**
      * Gets the numeric value scaled to its human-readable unit (K, M, G, etc.).
      *
-     * @return self A new SotiNumber instance representing the scaled value.
+     * @return self A new ArbiNumber instance representing the scaled value.
      */
     public function getHumanValue(): self
     {
@@ -647,17 +647,17 @@ class SotiNumber
 
     // --- Magic methods for operator overloading (require PECL operator extension) ---
 
-    /** @param string|SotiNumber $delta */
+    /** @param string|ArbiNumber $delta */
     public function __add($delta): self { return $this->add($delta); }
-    /** @param string|SotiNumber $delta */
+    /** @param string|ArbiNumber $delta */
     public function __sub($delta): self { return $this->sub($delta); }
-    /** @param string|SotiNumber $delta */
+    /** @param string|ArbiNumber $delta */
     public function __mul($delta): self { return $this->mul($delta); }
-    /** @param string|SotiNumber $delta */
+    /** @param string|ArbiNumber $delta */
     public function __div($delta): self { return $this->div($delta); }
-    /** @param string|SotiNumber $delta */
+    /** @param string|ArbiNumber $delta */
     public function __mod($delta): self { return $this->mod($delta); }
-    /** @param string|SotiNumber $delta */
+    /** @param string|ArbiNumber $delta */
     public function __pow($delta): self { return $this->pow($delta); }
 
     // Note: Standard PECL Operator comparison uses overloaded operators (==, !=, <, >, <=, >=).
@@ -671,16 +671,16 @@ class SotiNumber
     public function __post_inc(): self { $original = $this->duplicate(); $this->__assign_add('1'); return $original; }
     public function __post_dec(): self { $original = $this->duplicate(); $this->__assign_sub('1'); return $original; }
 
-    /** @param string|SotiNumber $delta */
+    /** @param string|ArbiNumber $delta */
     public function __assign_add($delta): void { $this->value = $this->add($delta)->value; }
-    /** @param string|SotiNumber $delta */
+    /** @param string|ArbiNumber $delta */
     public function __assign_sub($delta): void { $this->value = $this->sub($delta)->value; }
-    /** @param string|SotiNumber $delta */
+    /** @param string|ArbiNumber $delta */
     public function __assign_mul($delta): void { $this->value = $this->mul($delta)->value; }
-    /** @param string|SotiNumber $delta */
+    /** @param string|ArbiNumber $delta */
     public function __assign_div($delta): void { $this->value = $this->div($delta)->value; }
-    /** @param string|SotiNumber $delta */
+    /** @param string|ArbiNumber $delta */
     public function __assign_mod($delta): void { $this->value = $this->mod($delta)->value; }
-    /** @param string|SotiNumber $delta */
+    /** @param string|ArbiNumber $delta */
     public function __assign_pow($delta): void { $this->value = $this->pow($delta)->value; }
 }
