@@ -1,0 +1,1 @@
+{"version":1,"defects":{"Shtse8\\SotiMath\\Tests\\SotiNumberTest::testCanBeCreatedFromString":5,"Shtse8\\SotiMath\\Tests\\SotiNumberTest::testToStringReturnsCorrectString":5},"times":{"Shtse8\\SotiMath\\Tests\\SotiNumberTest::testCanBeCreatedFromString":0.004,"Shtse8\\SotiMath\\Tests\\SotiNumberTest::testToStringReturnsCorrectString":0.001}}

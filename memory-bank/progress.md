@@ -1,30 +1,29 @@
-<!-- Version: 1.1 | Last Updated: 2025-06-04 -->
+<!-- Version: 1.2 | Last Updated: 2025-06-04 -->
 # Progress Tracker
 
 ## What Works
 - `SotiNumber.php` has basic structure and functionality.
-- Initial PHP 8.0 compatibility issues addressed (strict types, `clone` keyword, `__toString` return type).
+- Initial PHP 8.0 compatibility issues addressed.
 - Basic type hinting added.
-- Division by zero errors are now handled.
-- Memory Bank system initialized.
+- Division by zero errors handled.
+- Non-standard comparison magic methods (`__is_*`) removed.
+- `ln()` and `log()` methods refactored for potentially better performance and accuracy using `LN10` constant.
+- Memory Bank system initialized and updated.
 
 ## What Needs Doing
 - **Code Quality:**
-    - Review and potentially refactor `ln()` implementation (Taylor series might be inefficient/inaccurate).
-    - Investigate and address non-standard PECL Operator magic methods (`__is_*`).
-    - Add comprehensive PHPDoc blocks.
-    - Implement thorough unit tests.
+    - Implement thorough unit tests to verify correctness of all methods, especially refactored `ln()` and `log()`.
+    - Add comprehensive PHPDoc blocks (ongoing).
 - **Documentation:**
-    - Update `README.md` (PHP version requirement, installation instructions if PECL Operator is still relevant, API changes like `duplicate`).
+    - Update `README.md` (PHP version requirement, installation instructions, API changes like `duplicate`, PECL Operator info).
     - Potentially generate API documentation.
 - **Memory Bank:**
     - Continue populating with detailed findings and decisions.
 
 ## Current Status
-- Initial refactoring for PHP 8.0 compatibility completed.
-- Code analysis performed, identifying areas for further improvement.
+- Refactoring for PHP 8.0 compatibility and initial improvements largely complete.
+- `ln()` and `log()` methods improved.
 
 ## Known Issues
-- `ln()` implementation might have performance/precision limitations.
-- Purpose/validity of `__is_*` magic methods is unclear.
-- Lack of unit tests.
+- Lack of unit tests prevents verification of calculation accuracy.
+- PECL Operator integration details in README might need revision.

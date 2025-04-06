@@ -1,32 +1,24 @@
-<!-- Version: 1.1 | Last Updated: 2025-06-04 -->
+<!-- Version: 1.2 | Last Updated: 2025-06-04 -->
 # Active Context
 
 ## Current Focus
-- Refining `SotiNumber.php` based on initial analysis.
-- Ensuring full PHP 8.0 compatibility and adherence to best practices.
-- Documenting findings in Memory Bank.
+- Completing initial refactoring and improvements for `SotiNumber.php`.
+- Preparing for unit testing and documentation updates.
 
 ## Recent Changes
-- Analyzed `SotiNumber.php` for PHP 8.0 compatibility and improvements.
-- Applied initial fixes:
-    - Added `declare(strict_types=1);` and namespace `Shtse8\SotiMath;`.
-    - Renamed `clone()` to `duplicate()`.
-    - Added scalar type hints and return types (including `string` for `__toString`).
-    - Added basic PHPDoc blocks.
-    - Implemented division-by-zero checks for `div()` and `mod()`.
-    - Improved `normalizeFloat`, `floor`, `ceil`, `abs`, `truncate`, `round`, `format`, `getHumanUnitIndex`, `toString` methods.
-    - Added checks for invalid inputs in `ln()` and `log()`.
-    - Added type hints for magic methods where applicable.
+- Removed non-standard PECL Operator magic methods (`__is_*`).
+- Refactored `ln()` method:
+    - Added `LN10` constant.
+    - Implemented normalization strategy (`ln(x) = ln(y) + k * ln(10)`) for better performance/convergence.
+    - Extracted Taylor series calculation into `calculateLnTaylor()` private method.
+- Refactored `log()` method to use `LN10` constant for `log10` calculation.
 
 ## Next Steps
-1. Review the non-standard PECL Operator magic methods (`__is_*`). Decide whether to keep, remove, or replace them.
-2. Investigate the efficiency and precision of the `ln()` Taylor series implementation.
-3. Add comprehensive unit tests.
-4. Update `README.md` to reflect PHP 8.0 compatibility and changes.
-5. Commit the changes.
+1. Add comprehensive unit tests for `SotiNumber` class using PHPUnit.
+2. Update `README.md` to reflect PHP 8.0 compatibility, API changes (`duplicate`), and potentially revised PECL Operator information.
+3. Commit the changes related to `ln()`/`log()` refactoring and `__is_*` removal.
 
 ## Active Decisions
-- Adopted the standard Memory Bank file structure.
-- Renamed `clone` method to `duplicate`.
-- Implemented basic PHP 8.0 compatibility fixes and type hinting.
-- Added basic input validation and error handling for division/logarithms.
+- Removed non-standard `__is_*` comparison magic methods.
+- Adopted normalization strategy using `LN10` constant to improve `ln()` calculation.
+- Optimized `log()` for base 10 using `LN10`.

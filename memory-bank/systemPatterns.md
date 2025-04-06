@@ -1,4 +1,4 @@
-<!-- Version: 1.1 | Last Updated: 2025-06-04 -->
+<!-- Version: 1.2 | Last Updated: 2025-06-04 -->
 # System Patterns
 
 ## Architecture
@@ -6,15 +6,17 @@
 - Relies heavily on the PHP BCMath extension for arbitrary precision.
 
 ## Key Technical Decisions
-- **Immutability:** `SotiNumber` instances are immutable. Arithmetic operations return new instances.
-- **BCMath Dependency:** Core calculations are delegated to BCMath functions.
-- **Error Handling:** Using exceptions (`DivisionByZeroError`, `ValueError`) for invalid operations (e.g., division by zero, invalid log inputs).
+- **Immutability:** `SotiNumber` instances are immutable.
+- **BCMath Dependency:** Core calculations delegated to BCMath functions.
+- **Error Handling:** Using exceptions (`DivisionByZeroError`, `ValueError`).
 - **Type Safety:** Leveraging PHP 8.0 strict types and type hinting.
+- **Logarithm Calculation:** Using normalization and pre-calculated `LN10` constant for `ln()` and `log()` methods.
 
 ## Design Patterns
-- **Immutable Object:** Ensures that the state of a `SotiNumber` object cannot be changed after creation.
-- **Wrapper/Facade:** Wraps BCMath functions with a more object-oriented interface.
+- **Immutable Object.**
+- **Wrapper/Facade** (for BCMath).
+- **Constant** (for `LN10`).
 
 ## Potential Issues / Areas for Review
-- **`ln()` Implementation:** Current Taylor series might be suboptimal. Consider alternative algorithms (e.g., using properties of logarithms, AGM method) if high precision/performance is critical.
-- **PECL Operator Integration:** The usage of `__is_*` magic methods needs clarification regarding the PECL Operator extension's actual interface.
+- **`calculateLnTaylor()` Precision/Iterations:** The number of iterations in the Taylor series might still need tuning or a dynamic convergence check based on required precision.
+- **PECL Operator Integration:** Standard comparison operators (`==`, `<`, etc.) should work if the extension is loaded, but this is not explicitly tested or guaranteed by the library itself after removing `__is_*` methods.

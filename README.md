@@ -13,8 +13,8 @@
 
 ## Requirements
 
-- PHP 7.2 or higher
-- BCMath extension
+- PHP 8.0 or higher
+- BCMath extension enabled
 
 ### Optional (for operator overloading)
 - [PECL Operator extension](https://github.com/php/pecl-php-operator)
@@ -24,7 +24,7 @@
 ### Via Composer
 
 ```bash
-composer require shtse8/SotiNumber
+composer require shtse8/sotimath
 ```
 
 ### Installing BCMath
@@ -32,7 +32,8 @@ composer require shtse8/SotiNumber
 On Debian/Ubuntu systems:
 
 ```bash
-sudo apt install php7.2-bcmath
+# Example for PHP 8.0 on Debian/Ubuntu:
+sudo apt install php8.0-bcmath
 ```
 
 For other systems, please refer to the [PHP documentation](https://www.php.net/manual/en/book.bc.php) for installation instructions.
@@ -42,6 +43,10 @@ For other systems, please refer to the [PHP documentation](https://www.php.net/m
 If you want to use operator overloading, you'll need to install the PECL Operator extension:
 
 ```bash
+# Note: Installation might vary depending on your OS and PHP setup.
+# PECL Operator might not be actively maintained or compatible with recent PHP versions.
+# Verify compatibility before installing.
+# Example build steps (may need adjustments):
 git clone https://github.com/php/pecl-php-operator
 cd pecl-php-operator
 phpize
@@ -49,13 +54,15 @@ phpize
 make && sudo make install
 ```
 
-Then, enable the extension:
+Then, enable the extension (adjust paths for your PHP version, e.g., 8.0):
 
 ```bash
-echo "extension=operator.so" | sudo tee /etc/php/7.2/mods-available/operator.ini
-sudo ln -s /etc/php/7.2/mods-available/operator.ini /etc/php/7.2/cli/conf.d/20-operator.ini
-sudo ln -s /etc/php/7.2/mods-available/operator.ini /etc/php/7.2/fpm/conf.d/20-operator.ini
-sudo service php7.2-fpm reload
+# Example for PHP 8.0 FPM/CLI on Debian/Ubuntu:
+echo "extension=operator.so" | sudo tee /etc/php/8.0/mods-available/operator.ini
+sudo ln -s /etc/php/8.0/mods-available/operator.ini /etc/php/8.0/cli/conf.d/20-operator.ini
+sudo ln -s /etc/php/8.0/mods-available/operator.ini /etc/php/8.0/fpm/conf.d/20-operator.ini
+# Reload PHP-FPM if applicable
+sudo service php8.0-fpm reload
 ```
 
 Note: Adjust the PHP version in the paths if you're using a different version.
@@ -65,7 +72,7 @@ Note: Adjust the PHP version in the paths if you're using a different version.
 ### Basic Usage
 
 ```php
-use shtse8\SotiNumber;
+use Shtse8\SotiMath\SotiNumber;
 
 $num1 = new SotiNumber("1.8573958822565E+17");
 $num2 = new SotiNumber("111");
@@ -77,7 +84,7 @@ echo $result->toString();
 ### With Operator Overloading (requires PECL Operator)
 
 ```php
-use shtse8\SotiNumber;
+use Shtse8\SotiMath\SotiNumber;
 
 $num1 = new SotiNumber("1.8573958822565E+17");
 $num2 = new SotiNumber("111");
@@ -89,20 +96,35 @@ echo $result;
 
 ## Available Methods
 
-- `add($number)`: Addition
-- `sub($number)`: Subtraction
-- `mul($number)`: Multiplication
-- `div($number)`: Division
-- `mod($number)`: Modulus
-- `pow($number)`: Power
+Methods accept `string` or `SotiNumber` instances as arguments where applicable.
+
+- `add(string|SotiNumber $number)`: Addition
+- `sub(string|SotiNumber $number)`: Subtraction
+- `mul(string|SotiNumber $number)`: Multiplication
+- `div(string|SotiNumber $number)`: Division
+- `mod(string|SotiNumber $number)`: Modulus
+- `pow(string|SotiNumber $number)`: Power
 - `abs()`: Absolute value
-- `floor()`: Round down
-- `ceil()`: Round up
-- `round($precision)`: Round to specified precision
-- `isEqual($number)`: Equality comparison
-- `isSmaller($number)`: Less than comparison
-- `isGreater($number)`: Greater than comparison
-- `format($decimals)`: Format number with thousands separators and specified decimal places
+- `floor()`: Round down to the nearest integer
+- `ceil()`: Round up to the nearest integer
+- `round(int $precision = 0)`: Round to specified precision (half up)
+- `truncate(int $precision = 0)`: Truncate to specified precision
+- `ln()`: Natural logarithm (base e)
+- `log(string|SotiNumber $base)`: Logarithm to a specified base
+- `isEqual(string|SotiNumber $number)`: Equality comparison (`==`)
+- `isSmaller(string|SotiNumber $number)`: Less than comparison (`<`)
+- `isSmallerOrEqual(string|SotiNumber $number)`: Less than or equal comparison (`<=`)
+- `isGreater(string|SotiNumber $number)`: Greater than comparison (`>`)
+- `isGreaterOrEqual(string|SotiNumber $number)`: Greater than or equal comparison (`>=`)
+- `isNegative()`: Check if the number is negative
+- `isPositive()`: Check if the number is positive
+- `inc()`: Increment by 1
+- `dec()`: Decrement by 1
+- `format(int $decimals = 0)`: Format number with thousands separators and specified decimal places
+- `getHumanValue()`: Get the numeric value scaled to its human-readable unit (K, M, G, etc.)
+- `getHumanUnit()`: Get the human-readable unit (K, M, G, etc.) or empty string
+- `duplicate()`: Create a new instance with the same value
+- `toString()` / `__toString()`: Get the string representation
 
 For a complete list of methods and their usage, please refer to the [API documentation](link-to-api-docs).
 
@@ -121,4 +143,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-This update integrates the **Soti** prefix into your project description, reinforcing the values of simplicity, optimal performance, and type safety.
+This library aims to provide a simple, optimal, and type-safe interface for arbitrary precision math in PHP.
