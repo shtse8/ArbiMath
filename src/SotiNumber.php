@@ -186,10 +186,20 @@ class SotiNumber
      */
     public function pow(string|SotiNumber $delta): self
     {
-        $normalizedDelta = $delta instanceof SotiNumber ? $delta->value : $this->normalizeFloat($delta);
-        // bcpow requires an integer exponent if scale is not specified.
-        // Since we always use bcscale, it should handle fractional exponents correctly.
-        return new self(bcpow($this->value, $normalizedDelta));
+        $exponent = $delta instanceof SotiNumber ? $delta->value : $this->normalizeFloat($delta);
+
+        // Check if the exponent has a fractional part
+        if (str_contains($exponent, '.')) {
+            // bcmod with 1 returns the fractional part, or 0 if integer
+            if (bccomp(bcmod($exponent, '1'), '0') !== 0) {
+                 throw new ValueError("Exponent must be an integer for pow() method. Fractional exponents are not currently supported.");
+            }
+             // If fractional part is zero (e.g., "3.0"), truncate it
+             $exponent = bcadd($exponent, '0', 0);
+        }
+
+        // bcpow requires an integer exponent.
+        return new self(bcpow($this->value, $exponent));
     }
 
     /**

@@ -9,12 +9,22 @@ use Shtse8\SotiMath\SotiNumber;
 
 final class SotiNumberTest extends TestCase
 {
+    /**
+     * @covers \Shtse8\SotiMath\SotiNumber::__construct
+     * @covers \Shtse8\SotiMath\SotiNumber::normalizeFloat
+     */
     public function testCanBeCreatedFromString(): void
     {
         $num = new SotiNumber('123.456');
         $this->assertInstanceOf(SotiNumber::class, $num);
     }
 
+    /**
+     * @covers \Shtse8\SotiMath\SotiNumber::toString
+     * @covers \Shtse8\SotiMath\SotiNumber::__toString
+     * @covers \Shtse8\SotiMath\SotiNumber::__construct
+     * @covers \Shtse8\SotiMath\SotiNumber::normalizeFloat
+     */
     public function testToStringReturnsCorrectString(): void
     {
         $num = new SotiNumber('123.456000');
@@ -38,6 +48,9 @@ final class SotiNumberTest extends TestCase
 
     /**
      * @dataProvider additionProvider
+     * @covers \Shtse8\SotiMath\SotiNumber::add
+     * @covers \Shtse8\SotiMath\SotiNumber::__construct
+     * @covers \Shtse8\SotiMath\SotiNumber::normalizeFloat
      */
     public function testAddition(string $a, string $b, string $expected): void
     {
@@ -65,6 +78,9 @@ final class SotiNumberTest extends TestCase
 
     /**
      * @dataProvider subtractionProvider
+     * @covers \Shtse8\SotiMath\SotiNumber::sub
+     * @covers \Shtse8\SotiMath\SotiNumber::__construct
+     * @covers \Shtse8\SotiMath\SotiNumber::normalizeFloat
      */
     public function testSubtraction(string $a, string $b, string $expected): void
     {
@@ -90,6 +106,9 @@ final class SotiNumberTest extends TestCase
 
     /**
      * @dataProvider multiplicationProvider
+     * @covers \Shtse8\SotiMath\SotiNumber::mul
+     * @covers \Shtse8\SotiMath\SotiNumber::__construct
+     * @covers \Shtse8\SotiMath\SotiNumber::normalizeFloat
      */
     public function testMultiplication(string $a, string $b, string $expected): void
     {
@@ -114,6 +133,9 @@ final class SotiNumberTest extends TestCase
 
     /**
      * @dataProvider divisionProvider
+     * @covers \Shtse8\SotiMath\SotiNumber::div
+     * @covers \Shtse8\SotiMath\SotiNumber::__construct
+     * @covers \Shtse8\SotiMath\SotiNumber::normalizeFloat
      */
     public function testDivision(string $a, string $b, string $expected): void
     {
@@ -136,10 +158,156 @@ final class SotiNumberTest extends TestCase
         ];
     }
 
+    /**
+     * @dataProvider modulusProvider
+     * @covers \Shtse8\SotiMath\SotiNumber::mod
+     * @covers \Shtse8\SotiMath\SotiNumber::__construct
+     * @covers \Shtse8\SotiMath\SotiNumber::normalizeFloat
+     */
+    public function testModulus(string $a, string $b, string $expected): void
+    {
+        $numA = new SotiNumber($a);
+        $numB = new SotiNumber($b);
+        $this->assertSame($expected, $numA->mod($numB)->toString());
+        $this->assertSame($expected, $numA->mod($b)->toString());
+    }
+
+    public static function modulusProvider(): array
+    {
+        return [
+            'positive integers' => ['10', '3', '1'],
+            'negative dividend' => ['-10', '3', '-1'], // bcmod behavior
+            'negative divisor' => ['10', '-3', '1'],   // bcmod behavior
+            'decimals' => ['10.5', '2', '0.5'], // bcmod handles decimals
+            'zero result' => ['9', '3', '0'],
+        ];
+    }
+
+    /**
+     * @dataProvider powerProvider
+     * @covers \Shtse8\SotiMath\SotiNumber::pow
+     * @covers \Shtse8\SotiMath\SotiNumber::__construct
+     * @covers \Shtse8\SotiMath\SotiNumber::normalizeFloat
+     */
+    public function testPower(string $base, string $exp, string $expected): void
+    {
+        $numBase = new SotiNumber($base);
+        $numExp = new SotiNumber($exp);
+        $this->assertSame($expected, $numBase->pow($numExp)->toString());
+        $this->assertSame($expected, $numBase->pow($exp)->toString());
+    }
+
+    public static function powerProvider(): array
+    {
+        return [
+            'positive integer exponent' => ['2', '3', '8'],
+            'negative integer exponent' => ['2', '-2', '0.25'],
+            'zero exponent' => ['10', '0', '1'],
+            'base zero' => ['0', '5', '0'],
+            'base one' => ['1', '100', '1'],
+            'decimal base' => ['1.5', '2', '2.25'],
+            // bcpow does NOT support fractional exponents, even with scale, throws ValueError in PHP 8+
+            // 'fractional exponent (sqrt)' => ['9', '0.5', '3'], // Removed due to bcpow limitation
+            'negative base, odd exponent' => ['-2', '3', '-8'],
+            // Note: bcpow with negative base and non-integer exponent might be undefined or inconsistent
+            // 'negative base, even exponent' => ['-2', '2', '4'], // This works
+        ];
+    }
+
+    // --- Rounding and Absolute Value Tests ---
+
+    /**
+     * @dataProvider floorProvider
+     * @covers \Shtse8\SotiMath\SotiNumber::floor
+     * @covers \Shtse8\SotiMath\SotiNumber::isNegative
+     * @covers \Shtse8\SotiMath\SotiNumber::__construct
+     */
+    public function testFloor(string $value, string $expected): void
+    {
+        $num = new SotiNumber($value);
+        $this->assertSame($expected, $num->floor()->toString());
+    }
+
+    public static function floorProvider(): array
+    {
+        return [
+            'positive integer' => ['5', '5'],
+            'positive decimal' => ['5.7', '5'],
+            'positive decimal .1' => ['5.1', '5'],
+            'negative integer' => ['-5', '-5'],
+            'negative decimal' => ['-5.3', '-6'],
+            'negative decimal .9' => ['-5.9', '-6'],
+            'zero' => ['0', '0'],
+            'zero decimal' => ['0.8', '0'],
+            'negative zero decimal' => ['-0.8', '-1'],
+        ];
+    }
+
+    /**
+     * @dataProvider ceilProvider
+     * @covers \Shtse8\SotiMath\SotiNumber::ceil
+     * @covers \Shtse8\SotiMath\SotiNumber::isPositive
+     * @covers \Shtse8\SotiMath\SotiNumber::__construct
+     */
+    public function testCeil(string $value, string $expected): void
+    {
+        $num = new SotiNumber($value);
+        $this->assertSame($expected, $num->ceil()->toString());
+    }
+
+    public static function ceilProvider(): array
+    {
+        return [
+            'positive integer' => ['5', '5'],
+            'positive decimal' => ['5.3', '6'],
+            'positive decimal .9' => ['5.9', '6'],
+            'negative integer' => ['-5', '-5'],
+            'negative decimal' => ['-5.7', '-5'],
+            'negative decimal .1' => ['-5.1', '-5'],
+            'zero' => ['0', '0'],
+            'zero decimal' => ['0.2', '1'],
+            'negative zero decimal' => ['-0.2', '0'],
+        ];
+    }
+
+    /**
+     * @dataProvider absoluteProvider
+     * @covers \Shtse8\SotiMath\SotiNumber::abs
+     * @covers \Shtse8\SotiMath\SotiNumber::isNegative
+     * @covers \Shtse8\SotiMath\SotiNumber::mul
+     * @covers \Shtse8\SotiMath\SotiNumber::duplicate
+     * @covers \Shtse8\SotiMath\SotiNumber::__construct
+     */
+    public function testAbsolute(string $value, string $expected): void
+    {
+        $num = new SotiNumber($value);
+        $this->assertSame($expected, $num->abs()->toString());
+    }
+
+    public static function absoluteProvider(): array
+    {
+        return [
+            'positive integer' => ['5', '5'],
+            'negative integer' => ['-5', '5'],
+            'positive decimal' => ['1.23', '1.23'],
+            'negative decimal' => ['-1.23', '1.23'],
+            'zero' => ['0', '0'],
+            'negative zero' => ['-0', '0'], // abs should handle this via bccomp
+        ];
+    }
+
+
     // --- Comparison Tests ---
 
     /**
      * @dataProvider comparisonProvider
+     * @covers \Shtse8\SotiMath\SotiNumber::isEqual
+     * @covers \Shtse8\SotiMath\SotiNumber::isSmaller
+     * @covers \Shtse8\SotiMath\SotiNumber::isGreater
+     * @covers \Shtse8\SotiMath\SotiNumber::isSmallerOrEqual
+     * @covers \Shtse8\SotiMath\SotiNumber::isGreaterOrEqual
+     * @covers \Shtse8\SotiMath\SotiNumber::__construct
+     * @covers \Shtse8\SotiMath\SotiNumber::normalizeFloat
      */
     public function testComparisons(string $a, string $b, bool $eq, bool $lt, bool $gt, bool $lte, bool $gte): void
     {
@@ -185,6 +353,9 @@ final class SotiNumberTest extends TestCase
 
     /**
      * @dataProvider signProvider
+     * @covers \Shtse8\SotiMath\SotiNumber::isNegative
+     * @covers \Shtse8\SotiMath\SotiNumber::isPositive
+     * @covers \Shtse8\SotiMath\SotiNumber::__construct
      */
     public function testSignMethods(string $val, bool $isNegative, bool $isPositive): void
     {
