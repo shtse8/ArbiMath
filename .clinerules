@@ -1,0 +1,20 @@
+<!-- Version: 1.1 | Last Updated: 2025-06-04 -->
+# Cline Rules for SotiMath
+
+## Project-Specific Patterns
+- **Immutability:** `SotiNumber` objects MUST remain immutable. All methods performing calculations or modifications MUST return a new `SotiNumber` instance.
+
+## Preferences
+- Use PHP 8.0 features where appropriate (e.g., `str_contains`, `ValueError`, constructor property promotion if applicable later).
+- Follow PSR-12 coding style standards.
+- Add comprehensive PHPDoc blocks for all classes, methods, and properties.
+- Implement unit tests using PHPUnit.
+
+## Intelligence
+- Memory Bank system is critical for context persistence.
+- BCMath is the core dependency for calculations.
+
+## Challenges
+- Understanding the original intent and functionality of `SotiNumber.php`, especially the `ln()` and `__is_*` magic methods.
+- Ensuring high precision and performance for complex operations like `ln()`.
+- Verifying the correct behavior and necessity of PECL Operator-related magic methods.
