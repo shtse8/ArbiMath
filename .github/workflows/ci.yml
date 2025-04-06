@@ -1,0 +1,45 @@
+name: PHP Composer CI & Tests
+
+on:
+  push:
+    branches: [ "main", "master" ] # Runs on pushes to main branches
+    tags: [ 'v*.*.*' ]           # Runs on version tags like v1.0.0
+  pull_request:
+    branches: [ "main", "master" ] # Runs on PRs targeting main branches
+
+permissions:
+  contents: read
+
+jobs:
+  build_and_test: # Renamed job for clarity
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4 # Checks out your repository under $GITHUB_WORKSPACE
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.0' # Matches project requirement
+        extensions: bcmath # Ensure BCMath is available
+        coverage: none # No code coverage for now
+
+    - name: Validate composer.json and composer.lock
+      run: composer validate --strict
+
+    - name: Cache Composer packages
+      id: composer-cache
+      uses: actions/cache@v4
+      with:
+        path: vendor
+        key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-php-
+
+    - name: Install dependencies
+      # Use --ignore-platform-reqs for CI if needed, but prefer matching env
+      run: composer install --prefer-dist --no-progress
+
+    - name: Run test suite
+      run: vendor/bin/phpunit
