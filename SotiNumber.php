@@ -18,6 +18,8 @@ class SotiNumber
     private const HUMAN_UNITS = [
         3 => 'K', 6 => 'M', 9 => 'G', 12 => 'T', 15 => 'P', 18 => 'E'
     ];
+    // ln(10) to 40 decimal places + a few guard digits
+    private const LN10 = '2.302585092994045684017991454684364207601101488';
 
     /** @var string The internal value as a string. */
     private string $value;
@@ -192,9 +194,11 @@ class SotiNumber
 
     /**
      * Calculates the natural logarithm (base e).
-     * Uses Taylor series expansion. Might be slow for high precision/large numbers.
+     * Uses normalization to bring the value closer to 1 for faster Taylor series convergence.
+     * ln(x) = ln(y * 10^k) = ln(y) + k * ln(10)
      *
      * @return self A new SotiNumber instance representing the natural logarithm.
+     * @throws ValueError If the number is not positive.
      */
     public function ln(): self
     {
@@ -202,22 +206,87 @@ class SotiNumber
         if ($this->isSmallerOrEqual('0')) {
             throw new ValueError("Natural logarithm is only defined for positive numbers.");
         }
-
-        $retval = new self(0);
-        // This Taylor series converges faster for values close to 1.
-        // Consider using transformations or different algorithms for better performance/convergence.
-        // Formula: ln(x) = 2 * sum[ (1/(2n+1)) * ((x-1)/(x+1))^(2n+1) ] for n=0 to inf
-        $retval = new self('0');
-        $base = $this->sub('1')->div($this->add('1')); // (x-1)/(x+1)
-
-        for ($i = 0; $i < self::ITERATIONS; $i++) {
-            $two_i_plus_1 = (string)(2 * $i + 1);
-            $term_power = $base->pow($two_i_plus_1);
-            $term_divisor = new self($two_i_plus_1);
-            $fraction = $term_power->div($term_divisor);
-            $retval = $retval->add($fraction);
+        // ln(1) = 0
+        if ($this->isEqual('1')) {
+            return new self('0');
         }
-        return $retval->mul('2');
+
+        // Normalize x to y * 10^k where y is in [1, 10)
+        $x_str = $this->value;
+        $k = 0; // Exponent for 10^k
+
+        // Find exponent k
+        if (bccomp($this->abs()->value, '1', 0) === -1) { // 0 < x < 1
+            // Find position of first non-zero digit after decimal point
+            if (str_contains($x_str, '.')) {
+                $decimalPart = explode('.', $x_str, 2)[1];
+                $k = -(strspn($decimalPart, '0') + 1);
+            } else {
+                 // This case should not happen for 0 < x < 1 if normalized correctly, but handle defensively
+                 $k = 0; // Or throw error?
+            }
+        } else { // x >= 1
+            $integerPart = explode('.', $x_str, 2)[0];
+            // Handle negative sign if present, although ln is for positive numbers
+            $integerPart = ltrim($integerPart, '-');
+            $k = strlen($integerPart) - 1;
+        }
+
+        // Calculate y = x / 10^k
+        $powerOf10 = bcpow('10', (string)$k);
+        $y = bcdiv($x_str, $powerOf10); // y is now in [0.1, 1) or [1, 10)
+
+        // Calculate ln(y) using Taylor series (now y is closer to 1)
+        $ln_y = $this->calculateLnTaylor(new self($y));
+
+        // Calculate k * ln(10)
+        $k_ln10 = bcmul((string)$k, self::LN10);
+
+        // Result: ln(y) + k * ln(10)
+        return $ln_y->add($k_ln10);
+    }
+
+    /**
+     * Calculates the natural logarithm using Taylor series.
+     * Assumes the input $y is relatively close to 1 for better convergence.
+     * Formula: ln(y) = 2 * sum[ (1/(2n+1)) * ((y-1)/(y+1))^(2n+1) ] for n=0 to inf
+     *
+     * @param self $y The number (expected to be close to 1).
+     * @return self The natural logarithm of $y$.
+     */
+    private function calculateLnTaylor(self $y): self
+    {
+        // Use a slightly higher scale for intermediate calculations
+        $internalScale = self::INTERNAL_SCALE + 5;
+        bcscale($internalScale); // Set scale for this method
+
+        $limit = bcpow('10', (string)(-self::INTERNAL_SCALE)); // Convergence limit
+        $result = '0';
+        $termBase = bcdiv(bcsub($y->value, '1'), bcadd($y->value, '1')); // (y-1)/(y+1)
+        $powerOfTermBase = $termBase; // First power is ^1
+        $iteration = 0;
+
+        do {
+            $divisor = (string)(2 * $iteration + 1);
+            $term = bcdiv($powerOfTermBase, $divisor);
+
+            $previousResult = $result;
+            $result = bcadd($result, $term);
+
+            // Prepare for next iteration: power^n * base^2
+            $powerOfTermBase = bcmul($powerOfTermBase, bcmul($termBase, $termBase));
+            $iteration++;
+
+            // Check for convergence or max iterations
+            $delta = bcsub($result, $previousResult);
+            if (bccomp(ltrim($delta, '-'), $limit) === -1 || $iteration > self::ITERATIONS * 2) { // Increased iterations limit
+                 break;
+            }
+
+        } while (true);
+
+        bcscale(self::INTERNAL_SCALE); // Restore original scale
+        return new self(bcmul('2', $result)); // Multiply by 2 at the end
     }
 
 /**
@@ -227,18 +296,28 @@ class SotiNumber
  * @return self A new SotiNumber instance representing the logarithm.
  * @throws ValueError If base is non-positive or equals 1.
  */
-public function log(string|SotiNumber $base): self
-{
-    $baseNum = $base instanceof SotiNumber ? $base : new self($base);
+    public function log(string|SotiNumber $base): self
+    {
+        $baseNum = $base instanceof SotiNumber ? $base : new self($base);
 
-    if ($baseNum->isSmallerOrEqual('0') || $baseNum->isEqual('1')) {
-        throw new ValueError("Logarithm base must be positive and not equal to 1.");
-    }
+        if ($baseNum->isSmallerOrEqual('0') || $baseNum->isEqual('1')) {
+            throw new ValueError("Logarithm base must be positive and not equal to 1.");
+        }
 
-    $baseLn = $baseNum->ln();
-    // Division by zero check for ln(base) should be implicitly handled by ln() throwing error for base=1
-    return $this->ln()->div($baseLn);
-        return $this->ln()->div($baseLn);
+        // Optimization for log10
+        if ($baseNum->isEqual('10')) {
+            // log10(x) = ln(x) / ln(10)
+            $ln_x = $this->ln();
+            $ln10Num = new self(self::LN10); // Use the constant
+            // Division by zero check for LN10 is not needed as it's a known constant > 0
+            return $ln_x->div($ln10Num);
+        }
+
+        // General case: log_base(x) = ln(x) / ln(base)
+        $ln_x = $this->ln();
+        $ln_base = $baseNum->ln();
+        // ln(base) cannot be zero because base != 1 (checked above)
+        return $ln_x->div($ln_base);
     }
 
     /**
@@ -571,19 +650,11 @@ public function log(string|SotiNumber $base): self
     /** @param string|SotiNumber $delta */
     public function __pow($delta): self { return $this->pow($delta); }
 
-    // Note: Standard PECL Operator comparison uses overloaded operators (==, !=, <, >, <=, >=)
-    // These __is_* methods might be non-standard or for a specific use case.
-    // Keeping them for now, but they might not integrate with standard operator overloading.
-    /** @param string|SotiNumber $arg */
-    public function __is_identical($arg): bool { return $this->isEqual($arg); }
-     /** @param string|SotiNumber $arg */
-    public function __is_smaller($arg): bool { return $this->isSmaller($arg); }
-     /** @param string|SotiNumber $arg */
-    public function __is_smaller_or_equal($arg): bool { return $this->isSmallerOrEqual($arg); }
-     /** @param string|SotiNumber $arg */
-    public function __is_greater($arg): bool { return $this->isGreater($arg); }
-     /** @param string|SotiNumber $arg */
-    public function __is_greater_or_equal($arg): bool { return $this->isGreaterOrEqual($arg); }
+    // Note: Standard PECL Operator comparison uses overloaded operators (==, !=, <, >, <=, >=).
+    // The non-standard __is_* magic methods previously here have been removed.
+    // Use standard comparison methods (isEqual, isSmaller, etc.) or rely on
+    // PECL Operator overloading if the extension is installed.
+
 
     public function __pre_inc(): self { return $this->inc(); }
     public function __pre_dec(): self { return $this->dec(); }
