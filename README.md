@@ -1,5 +1,10 @@
 # 🚀 ArbiMath PHP: Unleash Infinite Precision in Your PHP Applications! 🚀
 
+<p align="center">
+  <img src="docs/banner.png" alt="ArbiMath banner" width="100%" />
+</p>
+
+
 [![Latest Stable Version](https://img.shields.io/packagist/v/shtse8/arbimath.svg?style=flat-square)](https://packagist.org/packages/shtse8/arbimath)
 [![Total Downloads](https://img.shields.io/packagist/dt/shtse8/arbimath.svg?style=flat-square)](https://packagist.org/packages/shtse8/arbimath)
 [![License](https://img.shields.io/packagist/l/shtse8/arbimath.svg?style=flat-square)](https://packagist.org/packages/shtse8/arbimath)
