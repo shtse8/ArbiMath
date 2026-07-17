@@ -1,9 +1,8 @@
 # 🚀 ArbiMath PHP: Unleash Infinite Precision in Your PHP Applications! 🚀
 
 <p align="center">
-  <img src="docs/banner.png" alt="ArbiMath banner" width="100%" />
+  <img src="https://mark.sylphx.com/api/v1/banner?type=wave&theme=tokyonight&text=ArbiMath&desc=A+PHP+8.0+library+for+arbitrary+precision+mathematics+using+BCMath%2C+featuring+an&height=200&animation=rise&credit=0" alt="ArbiMath — Sylphx Mark banner" width="100%" />
 </p>
-
 
 [![Latest Stable Version](https://img.shields.io/packagist/v/shtse8/arbimath.svg?style=flat-square)](https://packagist.org/packages/shtse8/arbimath)
 [![Total Downloads](https://img.shields.io/packagist/dt/shtse8/arbimath.svg?style=flat-square)](https://packagist.org/packages/shtse8/arbimath)
