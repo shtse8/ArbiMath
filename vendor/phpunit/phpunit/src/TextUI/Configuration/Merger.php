@@ -101,6 +101,12 @@ final readonly class Merger
             $disableCodeCoverageIgnore = $xmlConfiguration->codeCoverage()->disableCodeCoverageIgnore();
         }
 
+        if ($cliConfiguration->hasFailOnAllIssues()) {
+            $failOnAllIssues = $cliConfiguration->failOnAllIssues();
+        } else {
+            $failOnAllIssues = $xmlConfiguration->phpunit()->failOnAllIssues();
+        }
+
         if ($cliConfiguration->hasFailOnDeprecation()) {
             $failOnDeprecation = $cliConfiguration->failOnDeprecation();
         } else {
@@ -111,6 +117,12 @@ final readonly class Merger
             $failOnPhpunitDeprecation = $cliConfiguration->failOnPhpunitDeprecation();
         } else {
             $failOnPhpunitDeprecation = $xmlConfiguration->phpunit()->failOnPhpunitDeprecation();
+        }
+
+        if ($cliConfiguration->hasFailOnPhpunitWarning()) {
+            $failOnPhpunitWarning = $cliConfiguration->failOnPhpunitWarning();
+        } else {
+            $failOnPhpunitWarning = $xmlConfiguration->phpunit()->failOnPhpunitWarning();
         }
 
         if ($cliConfiguration->hasFailOnEmptyTestSuite()) {
@@ -147,6 +159,60 @@ final readonly class Merger
             $failOnWarning = $cliConfiguration->failOnWarning();
         } else {
             $failOnWarning = $xmlConfiguration->phpunit()->failOnWarning();
+        }
+
+        $doNotFailOnDeprecation = false;
+
+        if ($cliConfiguration->hasDoNotFailOnDeprecation()) {
+            $doNotFailOnDeprecation = $cliConfiguration->doNotFailOnDeprecation();
+        }
+
+        $doNotFailOnPhpunitDeprecation = false;
+
+        if ($cliConfiguration->hasDoNotFailOnPhpunitDeprecation()) {
+            $doNotFailOnPhpunitDeprecation = $cliConfiguration->doNotFailOnPhpunitDeprecation();
+        }
+
+        $doNotFailOnPhpunitWarning = false;
+
+        if ($cliConfiguration->hasDoNotFailOnPhpunitWarning()) {
+            $doNotFailOnPhpunitWarning = $cliConfiguration->doNotFailOnPhpunitWarning();
+        }
+
+        $doNotFailOnEmptyTestSuite = false;
+
+        if ($cliConfiguration->hasDoNotFailOnEmptyTestSuite()) {
+            $doNotFailOnEmptyTestSuite = $cliConfiguration->doNotFailOnEmptyTestSuite();
+        }
+
+        $doNotFailOnIncomplete = false;
+
+        if ($cliConfiguration->hasDoNotFailOnIncomplete()) {
+            $doNotFailOnIncomplete = $cliConfiguration->doNotFailOnIncomplete();
+        }
+
+        $doNotFailOnNotice = false;
+
+        if ($cliConfiguration->hasDoNotFailOnNotice()) {
+            $doNotFailOnNotice = $cliConfiguration->doNotFailOnNotice();
+        }
+
+        $doNotFailOnRisky = false;
+
+        if ($cliConfiguration->hasDoNotFailOnRisky()) {
+            $doNotFailOnRisky = $cliConfiguration->doNotFailOnRisky();
+        }
+
+        $doNotFailOnSkipped = false;
+
+        if ($cliConfiguration->hasDoNotFailOnSkipped()) {
+            $doNotFailOnSkipped = $cliConfiguration->doNotFailOnSkipped();
+        }
+
+        $doNotFailOnWarning = false;
+
+        if ($cliConfiguration->hasDoNotFailOnWarning()) {
+            $doNotFailOnWarning = $cliConfiguration->doNotFailOnWarning();
         }
 
         if ($cliConfiguration->hasStopOnDefect()) {
@@ -439,6 +505,12 @@ final readonly class Merger
             $disallowTestOutput = $cliConfiguration->disallowTestOutput();
         } else {
             $disallowTestOutput = $xmlConfiguration->phpunit()->beStrictAboutOutputDuringTests();
+        }
+
+        if ($cliConfiguration->hasDisplayDetailsOnAllIssues()) {
+            $displayDetailsOnAllIssues = $cliConfiguration->displayDetailsOnAllIssues();
+        } else {
+            $displayDetailsOnAllIssues = $xmlConfiguration->phpunit()->displayDetailsOnAllIssues();
         }
 
         if ($cliConfiguration->hasDisplayDetailsOnIncompleteTests()) {
@@ -749,27 +821,31 @@ final readonly class Merger
         assert($useBaseline !== '');
         assert($generateBaseline !== '');
 
-        if ($failOnDeprecation) {
+        if ($failOnAllIssues) {
+            $displayDetailsOnAllIssues = true;
+        }
+
+        if ($failOnDeprecation && !$doNotFailOnDeprecation) {
             $displayDetailsOnTestsThatTriggerDeprecations = true;
         }
 
-        if ($failOnPhpunitDeprecation) {
+        if ($failOnPhpunitDeprecation && !$doNotFailOnPhpunitDeprecation) {
             $displayDetailsOnPhpunitDeprecations = true;
         }
 
-        if ($failOnNotice) {
+        if ($failOnNotice && !$doNotFailOnNotice) {
             $displayDetailsOnTestsThatTriggerNotices = true;
         }
 
-        if ($failOnWarning) {
+        if ($failOnWarning && !$doNotFailOnWarning) {
             $displayDetailsOnTestsThatTriggerWarnings = true;
         }
 
-        if ($failOnIncomplete) {
+        if ($failOnIncomplete && !$doNotFailOnIncomplete) {
             $displayDetailsOnIncompleteTests = true;
         }
 
-        if ($failOnSkipped) {
+        if ($failOnSkipped && !$doNotFailOnSkipped) {
             $displayDetailsOnSkippedTests = true;
         }
 
@@ -824,14 +900,25 @@ final readonly class Merger
             $pathCoverage,
             $xmlConfiguration->codeCoverage()->ignoreDeprecatedCodeUnits(),
             $disableCodeCoverageIgnore,
+            $failOnAllIssues,
             $failOnDeprecation,
             $failOnPhpunitDeprecation,
+            $failOnPhpunitWarning,
             $failOnEmptyTestSuite,
             $failOnIncomplete,
             $failOnNotice,
             $failOnRisky,
             $failOnSkipped,
             $failOnWarning,
+            $doNotFailOnDeprecation,
+            $doNotFailOnPhpunitDeprecation,
+            $doNotFailOnPhpunitWarning,
+            $doNotFailOnEmptyTestSuite,
+            $doNotFailOnIncomplete,
+            $doNotFailOnNotice,
+            $doNotFailOnRisky,
+            $doNotFailOnSkipped,
+            $doNotFailOnWarning,
             $stopOnDefect,
             $stopOnDeprecation,
             $specificDeprecationToStopOn,
@@ -860,6 +947,7 @@ final readonly class Merger
             $reportUselessTests,
             $strictCoverage,
             $disallowTestOutput,
+            $displayDetailsOnAllIssues,
             $displayDetailsOnIncompleteTests,
             $displayDetailsOnSkippedTests,
             $displayDetailsOnTestsThatTriggerDeprecations,
