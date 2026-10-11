@@ -23,6 +23,7 @@ use function is_array;
 use function is_resource;
 use function proc_close;
 use function proc_open;
+use function str_starts_with;
 use function stream_get_contents;
 use function sys_get_temp_dir;
 use function tempnam;
@@ -66,6 +67,7 @@ final readonly class DefaultJobRunner extends JobRunner
                 $job->arguments(),
                 null,
                 $job->redirectErrors(),
+                $job->requiresXdebug(),
             );
         }
 
@@ -167,6 +169,16 @@ final readonly class DefaultJobRunner extends JobRunner
         $command     = [PHP_BINARY];
         $phpSettings = $job->phpSettings();
 
+        $xdebugModeConfiguredExplicitly = false;
+
+        foreach ($phpSettings as $phpSetting) {
+            if (str_starts_with($phpSetting, 'xdebug.mode')) {
+                $xdebugModeConfiguredExplicitly = true;
+
+                break;
+            }
+        }
+
         if ($runtime->hasPCOV()) {
             $pcovSettings = ini_get_all('pcov');
 
@@ -192,8 +204,13 @@ final readonly class DefaultJobRunner extends JobRunner
                 ),
             );
 
-            if (!CodeCoverage::instance()->isActive() &&
-                xdebug_is_debugger_active() === false) {
+            if (
+                !$xdebugModeConfiguredExplicitly &&
+                !CodeCoverage::instance()->isActive() &&
+                xdebug_is_debugger_active() === false &&
+                !$job->requiresXdebug()
+            ) {
+                // disable xdebug to speedup test execution
                 $phpSettings['xdebug.mode'] = 'xdebug.mode=off';
             }
         }
